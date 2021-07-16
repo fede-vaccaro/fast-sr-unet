@@ -1,0 +1,10 @@
+*.pkl
+*.pdf
+.idea/**
+generated/**
+*.mp4
+*.pkl
+**/__pycache__
+*.webm
+*.pth
+*.idea
