@@ -5,14 +5,14 @@ bitrate.
 
 #### Requirements:
 - Installing CUDA with torchvision and torch: `$ conda install pytorch torchvision cudatoolkit=10.2 -c pytorch -c`
-- (LPIPS)[https://github.com/richzhang/PerceptualSimilarity]: `$ pip install lpips`
+- [LPIPS](https://github.com/richzhang/PerceptualSimilarity): `$ pip install lpips`
 - FFMpeg compiled with H.265 codec and also VMAF metric. My version is included in the `helper/` directory but it won't likely work. 
-  For references check (the official compilation guide)[https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu] and 
-  the (VMAF GitHub Repository)[https://github.com/Netflix/vmaf].
+  For references check [the official compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu) and 
+  the [VMAF GitHub Repository](https://github.com/Netflix/vmaf).
   
 
 #### The dataset:
-First, the dataset we use for training is the (BVI-DVC)[https://arxiv.org/pdf/2003.13552]. For preparing the dataset there are two helper script, 
+First, the dataset we use for training is the [BVI-DVC](https://arxiv.org/pdf/2003.13552). For preparing the dataset there are two helper script, 
 `compress_train_videos.sh` for spatially compressing and encoding each video, then with `extract_train_frames.sh` the dataset can be prepared.   
 The train dataset should follow this naming scheme (assuming the videos are encoded with CRF 23):
 ```
