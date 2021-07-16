@@ -89,7 +89,7 @@ Ultimately will be printed on screen the experimental results, and also will be 
 ## Examples
 
 ![TajMahal](pics/tajmahal.png)
-Check (this link)[https://bit.ly/3aGPzMW] for the complete clip.  
+Check [this link](https://bit.ly/3aGPzMW) for the complete clip.  
 ![Venice](pics/venice.png)
 
 
