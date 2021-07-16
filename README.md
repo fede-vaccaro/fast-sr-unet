@@ -94,6 +94,6 @@ Check (this link)[https://bit.ly/3aGPzMW] for the complete clip.
 
 
 #### References:
-This code is the implementation of my Master Degree Thesis, from which we wrote the paper:
+This code is the implementation of my Master Degree Thesis, from which my supervisors and I wrote the paper:
 - [1] Fast video visual quality and resolution improvement using SR-UNet.
   Authors Federico Vaccaro, Marco Bertini, Tiberio Uricchio, and Alberto Del Bimbo (accepted at ACM MM '21)
