@@ -5,10 +5,10 @@ bitrate.
 
 #### Requirements:
 - Installing CUDA with torchvision and torch: `$ conda install pytorch torchvision cudatoolkit=10.2 -c pytorch -c`
-- [LPIPS](https://github.com/richzhang/PerceptualSimilarity): `$ pip install lpips`
+- (LPIPS)[https://github.com/richzhang/PerceptualSimilarity]: `$ pip install lpips`
 - FFMpeg compiled with H.265 codec and also VMAF metric. My version is included in the `helper/` directory but it won't likely work. 
-  For references check [the official compilation guide](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu) and 
-  the [VMAF GitHub Repository](https://github.com/Netflix/vmaf).
+  For references check (the official compilation guide)[https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu] and 
+  the (VMAF GitHub Repository)[https://github.com/Netflix/vmaf].
   
 
 #### The dataset:
@@ -42,7 +42,8 @@ The train dataset should follow this naming scheme (assuming the videos are enco
 
 To train the SR-ResNet described in the paper for 2x Super Resolution (as used in the model for the 540p -> 1080p upscaling), you can use this command.
 ```
-$ python train.py --arch srunet --device 0 --upscale 2 --export [EXPORT_DIR] --epochs 80 --dataset [DATASET_DIR] --crf 23
+$ python train.py --arch srunet --device 0 --upscale 2 --export [EXPORT_DIR] \
+--epochs 80 --dataset [DATASET_DIR] --crf 23
 ```
 Or, since most of these arguments are defaults, simply 
 ```
@@ -55,7 +56,8 @@ For more information about the other parameters, inspect `utils.py` or try
 
 However, in the bandwidth experiments we employed a lighter model, trained on a range of CRFs for performing an easier 1.5x upscale (720p -> 1080p). It is obtainable with the following command:
 ```
-$ python train.py --arch srunet --layer_multiplier 0.7 --n_filters 48 --downsample 0.75 --device 0 --upscale 2 --export [EXPORT_DIR] --epochs 80 --dataset [DATASET_DIR] --crf [CRF]
+$ python train.py --arch srunet --layer_multiplier 0.7 --n_filters 48 --downsample 0.75 --device 0 \
+--upscale 2 --export [EXPORT_DIR] --epochs 80 --dataset [DATASET_DIR] --crf [CRF]
 ```
 
 #### Testing the models:
