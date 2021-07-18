@@ -116,7 +116,8 @@ You can use the script `render.py` for using the model in real-time to upscale y
     ```
 - For 1.5x upscaling
     ```
-    $ python render.py --clipname path/to/clip.mp4 --model models/srunet_1.5x_crf23.pth --layer_mult 0.7 --n_filters 48 --downsample 0.75
+    $ python render.py --clipname path/to/clip.mp4 --model models/srunet_1.5x_crf23.pth \
+    --layer_mult 0.7 --n_filters 48 --downsample 0.75
     ```
 
 You will notice that by default the output is split in two halves: on the left there is the input, on the right there is
