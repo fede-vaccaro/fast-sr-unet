@@ -1,7 +1,4 @@
-import random
-
-from apex import amp
-
+# from apex import amp
 import pandas as pd
 import utils, os
 
@@ -13,21 +10,11 @@ from pathlib import Path
 
 import tqdm
 import data_loader as dl
-import torch
-from torch import nn as nn
-from torch.utils.data import DataLoader
 import pytorch_ssim as torch_ssim
 import lpips
 import numpy as np
-import matplotlib.pyplot as plt
-import time
 
-# from apex import amp as amp
-from geffnet import mobilenetv3_small_minimal_100
 from models import *
-import torchvision
-from collections import OrderedDict
-# from show_generator import save_with_cv
 from pytorch_unet import *
 from render import cv2toTorch, torchToCv2
 import cv2
@@ -47,18 +34,11 @@ def save_with_cv(pic, imname):
 
     cv2.imwrite(imname, npimg)
 
+
 def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, from_second=0, to_second=None,
                    test_lq=True,
                    skip_model_testing=False, crf=None):
     device = 'cuda'
-    downsample = False
-
-    # flownet_state = torch.load('flownets_EPE1.951.pth')['state_dict']
-    # flownet = FlowNetS(batchNorm=False)
-    # flownet.load_state_dict(flownet_state)
-    # flownet.eval()
-    # flownet = flownet.cuda()
-    mse = nn.MSELoss()
 
     test_tof = False and not skip_model_testing
     test_tlp = False and not skip_model_testing
@@ -78,24 +58,9 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
     else:
         raise Exception("Unknown architecture. Select one between:", args.archs)
 
-    # state_dict = torch.load('srresnet_gan_70.pkl')
-    # state_dict = torch.load('srresnet_gan_79.pkl')
-    # filename = f'models_pervideo/unet_{video_prefix}_0_crf{28}.pkl'
     print("Loading model: ", filename)
     state_dict = torch.load(filename)
-    # state_dict = torch.load('srgan_64x64_98_14-12-2020_1025_valloss0.20171_unet_residual.pkl')
-    # state_dict = OrderedDict([(k.replace('module.', ''), v) for k, v in state_dict.items()])
     model.load_state_dict(state_dict)
-
-    # model.reparametrize()
-    # model.init_unet('srgan_64x64_17_03-12-2020_1331_valloss0.18257_unet_multiframe.pkl')
-
-    # model = TemporalUNet()
-    # model = RFGenerator(fast=False)
-    # state_dict = torch.load('srgan_64x64_105_02-12-2020_1839_valloss0.20452_unet.pkl')
-    # model.load_state_dict(state_dict)
-    # model = ESPCN()
-
     model = model.cuda()
 
     # model = amp.initialize(model, opt_level='O2')
@@ -183,16 +148,12 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
     tLP_x = []
     tOF_x = []
     print("Evaluation")
-    loss_s_validation = []
     tqdm_ = tqdm.tqdm(range(to_frame - from_frame))
-    times = []
 
     dest = test_dir_prefix.split("/")
     dest_dir = Path("/".join(dest))
     dest = dest_dir / "out"
     dest.mkdir(exist_ok=True, parents=True)
-    patch_wise = True
-    patch_size = 8
     border = 0
 
     H_x, W_x = cap_lq.get(cv2.CAP_PROP_FRAME_HEIGHT), cap_lq.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -216,7 +177,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
     new_H = H_x + padH
     new_W = W_x + padW
 
-    # model.frame_queue.init_queue(frame_height=new_H, frame_width=new_W)
 
     model.batch_size = 1
     model.width = new_W  # x.shape[-1] + (patch_size - modW) % patch_size
@@ -236,9 +196,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
     thread2.start()
     thread3.start()
 
-    def crop_x(x):
-        return x[:, :, H_y, W_y]
-
     model = model.eval()
 
     for i in tqdm_:
@@ -253,9 +210,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
                 y_fake = y_fake[:, :, :H_y, :W_y]
                 if output_generated:
                     out_queue.put(y_fake)
-
-            # y_fake = gaussian_filter(y_fake)
-            # y_fake = F.avg_pool2d(y_fake, kernel_size=1, stride=1)
 
             if not skip_model_testing:
                 y_true = y_true.to(device)
@@ -272,7 +226,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
                     lp_sr = lpips_metric(prev_sr, y_fake)
                     tlp_step = abs(float(lp_gt - lp_sr))
                     tLP += [tlp_step]
-
 
             if test_lq:
                 x = x[:, :, :H_x, :W_x]
@@ -297,7 +250,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
             if not skip_model_testing:
                 prev_sr = y_fake.clone()
 
-            # model.reset_time()
 
     finish = True
     out_queue.put(None)
@@ -332,7 +284,6 @@ def evaluate_model(test_dir_prefix, output_generated, video_prefix, filename, fr
         if test_tof:
             out_dict['tOF_encoded'] = np.mean(tOF_x)
             print("Mean tOF H264:", np.mean(tOF_x))
-
 
     from_minute = from_second // 60
     to_minute = to_second // 60
@@ -392,12 +343,11 @@ if __name__ == '__main__':
     videos = [vid.strip(".y4m") for vid in os.listdir(test_dir) if vid.endswith('.y4m') and '1080' in vid]
 
     second_start = 0
-    second_finish = 120 # test no more than the 2nd minutes - none of the test videos last so much
+    second_finish = 120  # test no more than the 2nd minutes - none of the test videos last so much
 
     for crf, filename in [
         (args.CRF, args.MODEL_NAME),
     ]:
-        # crf = 23
         print(f"Testing CRF {crf}")
         output = []
 
