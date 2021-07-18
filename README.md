@@ -122,7 +122,7 @@ You can use the script `render.py` for using the model in real-time to upscale y
 You will notice that by default the output is split in two halves: on the left there is the input, on the right there is
 the upscaled version. You can show only the upscaled version by adding the flag `--show-only-upscaled`.
 
-_About performances, my GTX 1080 Ti is enough for rendering at 30fps when upscaling 540p -> 1080p and 25fos when 720p ->
+_About performances, my GTX 1080 Ti is enough for rendering at 30fps when upscaling 540p -> 1080p and 25fps when 720p ->
 1080p. Note that in the paper we also employed [Nvidia Apex](https://nvidia.github.io/apex/) for speeding up inference
 times._
 
