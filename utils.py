@@ -23,7 +23,7 @@ class ARArgs:
         ap.add_argument("-e", "--epochs", type=int, default=80,
                         help="Number of epochs you want to train the model.")
         ap.add_argument("--clipname", type=str, default="",
-                        help="Optimize the network specifically for a clip")
+                        help="[RENDER.PY ONLY] path to the clip you want to upscale")
         ap.add_argument("--arch", type=str, default="srunet", choices=archs,
                         help="Which network architecture to train.")
         ap.add_argument("--w0", type=float, default=1.0,
@@ -34,14 +34,16 @@ class ARArgs:
                         help="Adversarial Component Weight")
         ap.add_argument("--upscale", type=int, default=2,
                         help="Default upscale factor, obbtained as resolution ratio between LQ and HQ samples")
-        ap.add_argument("--layermult", type=float, default=1.0, help="Layer multiplier - SR UNet only")
-        ap.add_argument("--nfilters", type=int, default=64, help="Net Number of filters param - SR UNet and UNet only")
-        ap.add_argument("--downsample", type=float, default=None, help="Downsample factor, SR Unet and UNet only")
+        ap.add_argument("--layer_mult", type=float, default=1.0, help="Layer multiplier - SR UNet only")
+        ap.add_argument("--n_filters", type=int, default=64, help="Net Number of filters param - SR UNet and UNet only")
+        ap.add_argument("--downsample", type=float, default=1.0, help="Downsample factor, SR Unet and UNet only")
         ap.add_argument("--testdir", type=str, default="test",
                         help="[TEST ONLY] Where the test clips are contained.")
         ap.add_argument("--testinputres", type=int, default=540, help="[TEST ONLY] Input testing resolution")
         ap.add_argument("--testoutputres", type=int, default=1080, help="[TEST ONLY] Output testing resolution")
         ap.add_argument("--crf", type=int, default=23, help="Reference compression CRF")
+        ap.add_argument('--show-only-upscaled', dest='show-only-upscaled', action='store_true',
+                        help="[RENDER.PY ONLY] If you want to show only the neural net upscaled version of the video")
 
         if args is None:
             args = vars(ap.parse_args())
@@ -62,13 +64,14 @@ class ARArgs:
         self.W1 = args['w1']
         self.L0 = args['l0']
         self.UPSCALE_FACTOR = args['upscale']
-        self.LAYER_MULTIPLIER = args['layermult']
-        self.N_FILTERS = args['nfilters']
+        self.LAYER_MULTIPLIER = args['layer_mult']
+        self.N_FILTERS = args['n_filters']
         self.DOWNSAMPLE = args['downsample']
         self.TEST_INPUT_RES = args['testinputres']
         self.TEST_OUTPUT_RES = args['testoutputres']
         self.CRF = args['crf']
         self.TEST_DIR = args['testdir']
+        self.SHOW_ONLY_HQ = args['show-only-upscaled']
 
         self.archs = archs
 

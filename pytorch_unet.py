@@ -143,8 +143,8 @@ class UNet(nn.Module):
         else:
             self.conv_last = nn.Conv2d(n_filters, 3, kernel_size=1)
 
-        if downsample is not None:
-            self.downsample = 'interp'  # nn.UpsamplingBilinear2d(scale_factor=downsample)
+        if downsample is not None and downsample != 1.0:
+            self.downsample = nn.Upsample(scale_factor=downsample, mode='bicubic', align_corners=True)
         else:
             self.downsample = nn.Identity()
         self.layers = [self.dconv_down1, self.dconv_down2, self.dconv_down3, self.dconv_down4, self.dconv_up3,
@@ -190,8 +190,7 @@ class UNet(nn.Module):
                                mode='bicubic')
             x = torch.clamp(x, min=-1, max=1)
 
-        return x
-        # return torch.clamp(F.interpolate(x, mode='bicubic', scale_factor=0.75, align_corners=True), min=-1, max=1)# self.downsample(x)
+        return torch.clamp(self.downsample(x), min=-1, max=1)
 
     def reparametrize(self):
         for layer in self.layers:
@@ -244,7 +243,7 @@ class SRUnet(nn.Module):
                                            n_blocks=3 * layer_multiplier)
 
         self.maxpool = nn.MaxPool2d(2)
-        if downsample is not None and downsample != scale_factor:
+        if downsample is not None and downsample != 1.0:
             self.downsample = nn.Upsample(scale_factor=downsample, mode='bicubic', align_corners=True)
         else:
             self.downsample = nn.Identity()
